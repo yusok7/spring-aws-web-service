@@ -1,5 +1,6 @@
 package com.yusok7.springawswebservice.web;
 
+import com.yusok7.springawswebservice.config.auth.LoginUser;
 import com.yusok7.springawswebservice.config.auth.dto.SessionUser;
 import com.yusok7.springawswebservice.service.posts.PostsService;
 import com.yusok7.springawswebservice.web.dto.PostsResponseDto;
@@ -16,16 +17,12 @@ import javax.servlet.http.HttpSession;
 public class IndexController {
 
     private final PostsService postsService;
-    private final HttpSession httpSession;
 
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, @LoginUser SessionUser user) {
+
         model.addAttribute("posts", postsService.findAllDesc());
-        /**
-         * 앞서 작성된 CustomOAuth2UserService에서 로그인 성공 시 세션에 SessionUser를 저장하도록 구성했다.
-         * 즉, 로그인 성공 시 httpSession.getAttribute("user")를 통해 값을 가져올 수 있다.
-         */
-        SessionUser user = (SessionUser) httpSession.getAttribute("user");
+
         if (user != null) {
             /**
              * 세션에 저장된 값이 있을 때만 model에 userName으로 등록한다.
