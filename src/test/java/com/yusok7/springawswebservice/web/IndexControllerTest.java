@@ -41,7 +41,7 @@ class IndexControllerTest {
         String body = restTemplate.getForObject("/", String.class);
 
         // then
-        Assertions.assertThat(body).contains("스프링 부트로 시작하는 웹 서비스");
+        Assertions.assertThat(body).contains("스프링부트로 시작하는 웹 서비스");
     }
 
 }
