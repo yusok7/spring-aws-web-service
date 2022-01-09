@@ -18,7 +18,10 @@ import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
 /**
- * 해당 클래스에서는 구글 로그인 이후 가져온 사용자의 정보(email, name, picture등)들을 기반으로 가입 및 정보수정, 세션 저장 등의 기능 지원
+ * 해당 클래스에서는 구글 로그인 이후 가져온 사용자의 정보(email, name, picture등)들을 기반으로
+ * 가입 및 정보수정, 세션 저장 등의 기능 지원한다.
+ *
+ * 즉!! 리소스 서버(즉, 소셜 서비스들)에서 사용자 정보를 가져온 상태에서 추가로 진행하고자 하는 기능을 명시하는 곳이다!!!
  */
 
 @RequiredArgsConstructor
@@ -33,7 +36,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
-
 
         // 현재 로그인 진행 중인 서비스를 구분하는 코드
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
@@ -61,6 +63,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
+    /**
+     * findByEmail을 통해 값이 있다면
+     *      .map을 이용해 수정된 값을 반환한다.
+     * 없다면
+     *      .orElse를 통해 들어온 값을 그대로 반환한다.
+     */
     private User saveOrUpdate(OAuthAttributes attributes) {
         User user = userRepository.findByEmail(attributes.getEmail())
                 .map(entity -> entity.update(attributes.getName(), attributes.getPicture()))
